@@ -98,12 +98,15 @@ def mutation(childAll,pm):
 def steadyState(fitpop,fitmut):
         baru = []
         i = 0
-        while i < len(fitpop):
-                if fitpop[i]<fitmut[i]:
-                        baru.append(fitmut[i])
+        a = min(fitpop)
+        b = min(fitmut)
+        for fitness in fitpop:
+                if a<b:
+                        baru.append(b)
+                elif a>b:
+                        baru.append(a)
                 else:
-                        baru.append(fitpop[i])
-                i += 1
+                        baru.append(fitness)
         return baru
 
 def finalResult(maxim):
