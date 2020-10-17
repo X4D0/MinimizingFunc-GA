@@ -2,18 +2,17 @@ import numpy as np
 import random
 
 # Desain Kromosom dan Metode Pendekodean
-
 ## Binary Encoding using 3 bits (3 Gens)
 def createPopulation(jumlahGen,jumlahKromosom):
         pop = []
         i = 0
-        while i < jumlahKromosom:
-                gen = []
+        while i < jumlahKromosom: #Generate Chromosomes
+                chrom = []
                 j = 0
-                while j<jumlahGen:
-                        gen.append(random.randint(0,1))
+                while j<jumlahGen: #Generate Genes
+                        chrom.append(random.randint(0,1))
                         j += 1
-                pop.append(gen)
+                pop.append(chrom) #Input Chromosomes into Population
                 i += 1
         return pop
 
@@ -48,23 +47,11 @@ def allFitness(jKromosom, cx1, cx2):
 
 # Parent Selection using Roulette Wheel
 def rouletteWheel(fitness, population, random_):
-        fitProb = []
-        fp = 0
-        i = 0
-        while i < len(fitness):
-                fp += fitness[i]/np.sum(fitness)
-                fitProb.append(fp)
-                i += 1
-        r = 0
-        while r < len(population):
-                if r > 0 and fitProb[r-1] < random_ and fitProb[r] > random_:
-                        indiv = population[r]
-                        break
-                elif random_ < fitProb[0]:
-                        indiv = population[r]
-                        break
-                r += 1
-        return indiv
+        indiv = 0
+        while random_>0:
+                random_ -= fitness[indiv]/np.sum(fitness)
+                indiv += 1
+        return population[indiv]
 
 # Crossover
 def crossover(parentsAll,pc):
@@ -73,9 +60,9 @@ def crossover(parentsAll,pc):
         i = 0
         while i < len(parentsAll):
                 if np.random.uniform(0,1)<pc:
-                        titik = random.randint(1,jGens-1)
                         child1 = parentsAll[i]
                         child2 = parentsAll[j]
+                        titik = random.randint(1,jGens-1)
                         childAll.append(child1[:titik] + child2[titik:])
                         childAll.append(child2[:titik] + child1[titik:])
                         i += 2
@@ -124,7 +111,7 @@ def finalResult(maxim):
         
 # MAIN
 
-jGens = 6 ## Jumlah Gen
+jGens = 6 ## Jumlah Gen dalam satu Kromosom
 jKromosom = 40 ## Jumlah kromosom
 generations = 115 ## Jumlah Generasi
 ## Probability
@@ -155,7 +142,7 @@ for i in range(generations): # Stopping Criteria (Max Generations)
         mutasi = mutation(childAll, pm) # Do Mutation
         x1,x2 = decodeChromosomeList(population,rminx1, rmax1, rminx2, rmax2)
         fitnessNew = allFitness(len(mutasi),x1,x2)
-        fitnessAll = steadyState(fitnessAll,fitnessNew)
+        fitnessAll = steadyState(fitnessAll,fitnessNew) # Steady State
         print("Generation ",i+1," DONE!")
 
 maxim = fitnessAll[0]
